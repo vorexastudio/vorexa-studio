@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vorexa Studio — Innovation Beyond Reality</title>
+<link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --white:#ffffff;
+  --ink:#0b0f19;
+  --ink-soft:#3a4152;
+  --gray:#6b7280;
+  --gray-light:#9aa2b1;
+  --line:#e7ebf3;
+  --surface:#f6f8fc;
+  --blue:#3B82F6;
+  --blue-deep:#2563eb;
+  --blue-bright:#60a5fa;
+  --blue-50:#eff6ff;
+  --blue-glow:rgba(59,130,246,.18);
+  --radius:24px;
+  --radius-sm:14px;
+  --shadow-soft:0 20px 60px rgba(20,30,60,.06);
+  --shadow-blue:0 20px 50px rgba(59,130,246,.16);
+  --font-display:'Space Grotesk',sans-serif;
+  --font-body:'Inter',sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--font-body);
+  color:var(--ink);
+  background:var(--white);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+img,canvas{display:block;max-width:100%;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+::selection{background:var(--blue);color:#fff;}
+.wrap{max-width:1280px;margin:0 auto;padding:0 32px;}
+.eyebrow{
+  font-family:var(--font-mono);
+  font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--blue-deep);font-weight:500;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 4px var(--blue-glow);}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;letter-spacing:-.02em;color:var(--ink);}
+.section{padding:120px 0;position:relative;}
+.section-head{max-width:640px;margin-bottom:64px;}
+.section-head h2{font-size:clamp(30px,4vw,44px);line-height:1.1;margin-top:14px;}
+.section-head p{color:var(--gray);font-size:17px;line-height:1.6;margin-top:16px;}
+.center{text-align:center;margin-left:auto;margin-right:auto;}
+
+/* reveal on scroll */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1);}
+.reveal.in{opacity:1;transform:translateY(0);}
+
+/* buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:15px 30px;border-radius:100px;font-weight:600;font-size:14.5px;
+  position:relative;overflow:hidden;transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s;
+  white-space:nowrap;
+}
+.btn:active{transform:scale(.96);}
+.btn-primary{background:var(--ink);color:#fff;box-shadow:0 12px 30px rgba(11,15,25,.18);}
+.btn-primary:hover{background:var(--blue);box-shadow:var(--shadow-blue);transform:translateY(-2px);}
+.btn-ghost{background:var(--blue-50);color:var(--blue-deep);}
+.btn-ghost:hover{background:var(--blue);color:#fff;transform:translateY(-2px);}
+.btn-outline{border:1.5px solid var(--line);color:var(--ink);background:#fff;}
+.btn-outline:hover{border-color:var(--blue);color:var(--blue-deep);transform:translateY(-2px);}
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.5);transform:scale(0);animation:rip .6s ease-out;pointer-events:none;}
+@keyframes rip{to{transform:scale(3);opacity:0;}}
+
+/* glass */
+.glass{
+  background:rgba(255,255,255,.72);
+  backdrop-filter:blur(20px) saturate(160%);
+  -webkit-backdrop-filter:blur(20px) saturate(160%);
+  border:1px solid rgba(255,255,255,.6);
+  box-shadow:var(--shadow-soft);
+}
+
+/* ============ NAV ============ */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:18px 32px;transition:padding .3s,background .3s,box-shadow .3s;
+}
+header.scrolled{padding:12px 32px;background:rgba(255,255,255,.78);backdrop-filter:blur(18px);box-shadow:0 8px 30px rgba(20,30,60,.06);border-bottom:1px solid var(--line);}
+nav{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;font-size:19px;letter-spacing:-.01em;}
+.logo{
+    display:flex;
+    align-items:center;
+}
+
+.logo img{
+    height:60px;
+    width:auto;
+    display:block;
+    transition:.3s;
+}
+
+.logo img:hover{
+    transform:scale(1.03);
+}
+.logo-mark::after{content:'';position:absolute;inset:8px;border:2px solid rgba(255,255,255,.85);border-radius:4px;transform:rotate(45deg);}
+.nav-links{display:flex;align-items:center;gap:36px;}
+.nav-links a{font-size:14.5px;font-weight:500;color:var(--ink-soft);position:relative;padding:4px 0;}
+.nav-links a::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:2px;background:var(--blue);transition:width .3s;}
+.nav-links a:hover{color:var(--ink);}
+.nav-links a:hover::after{width:100%;}
+.nav-right{display:flex;align-items:center;gap:14px;}
+.burger{display:none;flex-direction:column;gap:5px;padding:8px;}
+.burger span{width:22px;height:2px;background:var(--ink);border-radius:2px;}
+
+/* ============ HERO ============ */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+  padding:150px 32px 60px;position:relative;
+  background:
+    radial-gradient(600px 400px at var(--mx,20%) var(--my,10%), var(--blue-glow), transparent 60%),
+    linear-gradient(180deg,#fbfcff 0%,#ffffff 55%);
+  overflow:hidden;
+}
+.hero-blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;pointer-events:none;}
+.hero-blob.b1{width:460px;height:460px;background:radial-gradient(circle,var(--blue-bright),transparent 70%);top:-160px;right:-120px;}
+.hero-blob.b2{width:360px;height:360px;background:radial-gradient(circle,var(--blue),transparent 70%);bottom:-140px;left:-100px;opacity:.25;}
+.hero-inner{max-width:1280px;margin:0 auto;width:100%;position:relative;z-index:2;}
+.hero-top{text-align:center;max-width:820px;margin:0 auto 56px;}
+.hero-top h1{font-size:clamp(36px,5.4vw,64px);line-height:1.06;margin-top:20px;}
+.hero-top h1 em{font-style:normal;color:var(--blue);}
+.hero-top p{font-size:18px;color:var(--gray);max-width:600px;margin:22px auto 0;line-height:1.65;}
+.hero-actions{display:flex;gap:14px;justify-content:center;margin-top:34px;flex-wrap:wrap;}
+
+/* ============ 3D VIEWER ============ */
+.viewer-shell{
+  display:grid;grid-template-columns:1fr 320px;gap:20px;
+  border-radius:var(--radius);overflow:hidden;
+}
+.viewer-stage{
+  position:relative;border-radius:var(--radius);overflow:hidden;
+  background:linear-gradient(180deg,#eef3fb 0%,#f8fafd 60%,#ffffff 100%);
+  min-height:540px;border:1px solid var(--line);
+}
+.viewer-stage canvas{width:100%!important;height:100%!important;display:block;cursor:grab;}
+.viewer-stage canvas:active{cursor:grabbing;}
+.viewer-topbar{position:absolute;top:18px;left:18px;right:18px;display:flex;justify-content:space-between;align-items:flex-start;z-index:5;pointer-events:none;}
+.hud-chip{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--ink-soft);
+  padding:8px 14px;border-radius:100px;display:flex;gap:10px;pointer-events:auto;
+}
+.hud-chip b{color:var(--blue-deep);font-weight:600;}
+.viewer-toolbar{
+  position:absolute;bottom:18px;left:18px;right:18px;display:flex;justify-content:space-between;align-items:center;gap:10px;z-index:5;
+}
+.tool-group{display:flex;gap:6px;padding:6px;border-radius:100px;}
+.tool-btn{
+  width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  color:var(--ink-soft);transition:background .25s,color .25s,transform .25s;
+}
+.tool-btn:hover{background:var(--blue-50);color:var(--blue-deep);transform:translateY(-1px);}
+.tool-btn.active{background:var(--blue);color:#fff;}
+.tool-btn svg{width:17px;height:17px;}
+.viewer-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:12px;color:var(--gray);letter-spacing:.08em;background:#f8fafd;z-index:6;transition:opacity .5s;}
+.spin{width:22px;height:22px;border-radius:50%;border:2px solid var(--blue-50);border-top-color:var(--blue);animation:sp 1s linear infinite;margin-right:10px;}
+@keyframes sp{to{transform:rotate(360deg);}}
+
+.viewer-panel{border-radius:var(--radius);padding:22px;display:flex;flex-direction:column;gap:22px;overflow-y:auto;}
+.panel-block h4{font-size:11px;font-family:var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--gray-light);margin-bottom:12px;font-weight:600;}
+.swatch-row{display:flex;gap:10px;flex-wrap:wrap;}
+.pill{
+  padding:8px 15px;border-radius:100px;font-size:13px;font-weight:500;border:1.5px solid var(--line);color:var(--ink-soft);transition:.25s;
+}
+.pill:hover{border-color:var(--blue-bright);}
+.pill.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.color-row{display:flex;gap:10px;}
+.swatch{width:28px;height:28px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1.5px var(--line);cursor:pointer;transition:transform .25s,box-shadow .25s;}
+.swatch:hover{transform:scale(1.12);}
+.swatch.active{box-shadow:0 0 0 2px var(--blue);transform:scale(1.1);}
+.tool-list{display:flex;flex-direction:column;gap:6px;}
+.tool-row{
+  display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-radius:12px;font-size:13.5px;font-weight:500;color:var(--ink-soft);transition:background .2s;
+}
+.tool-row:hover{background:var(--blue-50);}
+.tool-row.on{background:var(--blue-50);color:var(--blue-deep);}
+.toggle{width:34px;height:19px;border-radius:20px;background:var(--line);position:relative;transition:background .25s;flex-shrink:0;}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .25s;}
+.tool-row.on .toggle{background:var(--blue);}
+.tool-row.on .toggle::after{transform:translateX(15px);}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.info-cell{background:var(--surface);border-radius:12px;padding:10px 12px;}
+.info-cell span{display:block;font-family:var(--font-mono);font-size:10px;color:var(--gray-light);text-transform:uppercase;letter-spacing:.06em;}
+.info-cell b{font-family:var(--font-mono);font-size:14px;color:var(--ink);font-weight:600;}
+.toast{
+  position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);
+  padding:13px 22px;border-radius:100px;font-size:13.5px;font-weight:500;z-index:999;
+  opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ============ STATS ============ */
+.stats-band{background:var(--ink);border-radius:var(--radius);margin:0 32px;padding:64px 40px;}
+.stats-band .wrap{max-width:1120px;padding:0;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center;}
+.stat b{display:block;font-family:var(--font-display);font-size:clamp(34px,4vw,52px);color:#fff;letter-spacing:-.02em;}
+.stat b span{color:var(--blue-bright);}
+.stat p{color:#8b93a7;font-size:14px;margin-top:8px;font-family:var(--font-mono);letter-spacing:.03em;}
+
+/* ============ SERVICES ============ */
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+.serv-card{
+  padding:32px 26px;border-radius:var(--radius);border:1px solid var(--line);background:#fff;
+  transition:transform .4s cubic-bezier(.16,1,.3,1),box-shadow .4s,border-color .4s;
+}
+.serv-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-blue);border-color:transparent;}
+.serv-icon{width:48px;height:48px;border-radius:14px;background:var(--blue-50);display:flex;align-items:center;justify-content:center;margin-bottom:22px;color:var(--blue-deep);transition:background .35s,color .35s;}
+.serv-card:hover .serv-icon{background:var(--blue);color:#fff;}
+.serv-icon svg{width:22px;height:22px;}
+.serv-card h3{font-size:17px;margin-bottom:8px;}
+.serv-card p{font-size:13.5px;color:var(--gray);line-height:1.55;}
+
+/* ============ PORTFOLIO ============ */
+.filter-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:40px;}
+.port-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.port-card{
+  border-radius:var(--radius);overflow:hidden;position:relative;background:#fff;border:1px solid var(--line);
+  transition:transform .3s;
+}
+.port-card.hide{display:none;}
+.port-visual{
+  height:230px;position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.project-thumb{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.port-visual{
+    overflow:hidden;
+}
+.port-visual svg{width:64px;height:64px;color:#fff;opacity:.9;position:relative;z-index:2;transition:transform .5s cubic-bezier(.16,1,.3,1);}
+.port-card:hover .port-visual svg{transform:scale(1.15) rotate(-6deg);}
+.port-visual::after{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.18),transparent 60%);}
+.port-body{padding:22px 24px 26px;}
+.port-body .tag{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--blue-deep);}
+.port-body h3{font-size:18px;margin:8px 0 6px;}
+.port-body p{font-size:13px;color:var(--gray);margin-bottom:18px;}
+.port-actions{display:flex;gap:10px;}
+.port-actions .btn{padding:10px 16px;font-size:12.5px;}
+
+/* ============ WORKFLOW ============ */
+.flow-track{position:relative;padding-top:10px;}
+.flow-line{position:absolute;top:23px;left:0;right:0;height:2px;background:var(--line);}
+.flow-line-fill{position:absolute;top:0;left:0;height:100%;width:0%;background:linear-gradient(90deg,var(--blue),var(--blue-bright));transition:width 1.2s cubic-bezier(.16,1,.3,1);}
+.flow-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:14px;position:relative;}
+.flow-step{display:flex;flex-direction:column;align-items:flex-start;gap:14px;}
+.flow-dot{
+  width:46px;height:46px;border-radius:50%;background:#fff;border:2px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:600;font-size:13px;color:var(--gray-light);
+  transition:.4s;
+}
+.flow-step.on .flow-dot{border-color:var(--blue);color:var(--blue-deep);box-shadow:0 0 0 6px var(--blue-glow);}
+.flow-step h4{font-size:14px;}
+.flow-step p{font-size:12px;color:var(--gray);line-height:1.5;}
+
+/* ============ SOFTWARE ============ */
+.soft-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:16px;}
+.soft-card{
+  aspect-ratio:1;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  transition:transform .35s,box-shadow .35s;
+}
+.soft-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-blue);}
+.software-logo{
+
+width:58px;
+
+height:58px;
+
+object-fit:contain;
+
+transition:.35s;
+
+}
+
+.soft-card:hover .software-logo{
+
+transform:scale(1.1);
+
+}
+.soft-card span{font-size:11.5px;font-weight:600;color:var(--ink-soft);text-align:center;padding:0 6px;}
+
+/* ============ WHY ============ */
+.why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);}
+.why-item{background:#fff;padding:34px 26px;display:flex;flex-direction:column;gap:14px;transition:background .3s;}
+.why-item:hover{background:var(--blue-50);}
+.why-num{font-family:var(--font-mono);font-size:12px;color:var(--blue);}
+.why-item h4{font-size:15.5px;}
+
+/* ============ TESTIMONIALS ============ */
+.test-wrap{position:relative;max-width:760px;margin:0 auto;overflow:hidden;}
+.test-track{display:flex;transition:transform .7s cubic-bezier(.16,1,.3,1);}
+.test-slide{min-width:100%;padding:6px;}
+.test-card{border-radius:var(--radius);padding:44px 48px;text-align:center;}
+.stars{color:var(--blue);font-size:15px;letter-spacing:3px;margin-bottom:20px;}
+.test-quote{font-family:var(--font-display);font-size:20px;line-height:1.5;color:var(--ink);margin-bottom:26px;}
+.test-person{display:flex;align-items:center;justify-content:center;gap:12px;}
+.avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue-deep));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-family:var(--font-display);}
+.test-person div{text-align:left;}
+.test-person b{display:block;font-size:14px;}
+.test-person span{font-size:12.5px;color:var(--gray);}
+.test-dots{display:flex;justify-content:center;gap:8px;margin-top:28px;}
+.test-dots span{width:7px;height:7px;border-radius:50%;background:var(--line);transition:.3s;cursor:pointer;}
+.test-dots span.on{background:var(--blue);width:22px;border-radius:4px;}
+
+/* ============ CONTACT ============ */
+.contact-shell{display:grid;grid-template-columns:1fr 1.3fr;gap:0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);}
+.contact-side{background:var(--ink);color:#fff;padding:56px 48px;display:flex;flex-direction:column;}
+.contact-side h3{color:#fff;font-size:26px;margin-bottom:14px;}
+.contact-side p{color:#9aa3b8;font-size:14.5px;line-height:1.6;}
+.contact-info{display:flex;flex-direction:column;gap:16px;margin-top:34px;}
+.contact-info div{display:flex;align-items:center;gap:12px;font-size:14px;color:#d5dae6;}
+.contact-info svg{width:17px;height:17px;color:var(--blue-bright);flex-shrink:0;}
+.social-row{display:flex;gap:10px;margin-top:34px;}
+.social-row a{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;transition:.3s;}
+.social-row a:hover{background:var(--blue);}
+.social-row svg{width:16px;height:16px;}
+.map-fake{border-radius:14px;overflow:hidden;height:110px;position:relative;margin-top:30px;background:linear-gradient(135deg,#1a2438,#0b0f19);}
+.map-fake::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(96,165,250,.25) 1px,transparent 1px);background-size:14px 14px;}
+.map-pin{position:absolute;top:50%;left:38%;width:12px;height:12px;border-radius:50%;background:var(--blue-bright);box-shadow:0 0 0 6px rgba(96,165,250,.25);}
+
+
+.trust-card{
+    margin-top:30px;
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:18px;
+    padding:18px;
+}
+.trust-item{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 0;
+}
+.trust-item:not(:last-child){
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+.trust-item span{
+    width:36px;
+    height:36px;
+    border-radius:10px;
+    background:rgba(59,130,246,.15);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    flex-shrink:0;
+}
+.trust-item strong{
+    display:block;
+    color:#fff;
+    font-size:16px;
+}
+.trust-item small{
+    display:block;
+    color:#9aa3b8;
+    font-size:13px;
+    margin-top:3px;
+}
+
+.contact-form{background:#fff;padding:56px 48px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:18px;}
+.field label{font-size:12.5px;font-weight:600;color:var(--ink-soft);}
+.field input,.field select,.field textarea{
+  padding:13px 16px;border-radius:12px;border:1.5px solid var(--line);font-family:inherit;font-size:14px;color:var(--ink);
+  background:var(--surface);transition:border-color .25s,background .25s;
+}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--blue);background:#fff;}
+.field-upload{border:1.5px dashed var(--line);border-radius:12px;padding:18px;text-align:center;font-size:13px;color:var(--gray);cursor:pointer;transition:.25s;}
+.field-upload:hover{border-color:var(--blue-bright);background:var(--blue-50);}
+.form-actions{display:flex;gap:12px;margin-top:6px;flex-wrap:wrap;}
+
+/* ============ FOOTER ============ */
+footer{padding:70px 32px 30px;border-top:1px solid var(--line);margin-top:60px;}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;max-width:1280px;margin:0 auto;}
+.foot-col h5{font-size:12px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--gray-light);margin-bottom:18px;}
+.foot-col a,.foot-col p{display:block;font-size:14px;color:var(--ink-soft);margin-bottom:11px;transition:color .2s;}
+.foot-col a:hover{color:var(--blue-deep);}
+.foot-bottom{max-width:1280px;margin:50px auto 0;padding-top:26px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:13px;color:var(--gray-light);flex-wrap:wrap;gap:10px;}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:1024px){
+  .grid-4{grid-template-columns:repeat(2,1fr);}
+  .port-grid{grid-template-columns:repeat(2,1fr);}
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:36px;}
+  .why-grid{grid-template-columns:repeat(2,1fr);}
+  .soft-grid{grid-template-columns:repeat(4,1fr);}
+  .flow-grid{grid-template-columns:repeat(4,1fr);row-gap:36px;}
+  .flow-line{display:none;}
+  .viewer-shell{grid-template-columns:1fr;}
+  .contact-shell{grid-template-columns:1fr;}
+}
+@media(max-width:720px){
+  .nav-links{display:none;}
+  .burger{display:flex;}
+  .grid-4{grid-template-columns:1fr;}
+  .port-grid{grid-template-columns:1fr;}
+  .why-grid{grid-template-columns:1fr;}
+  .soft-grid{grid-template-columns:repeat(3,1fr);}
+  .flow-grid{grid-template-columns:repeat(2,1fr);}
+  .form-grid{grid-template-columns:1fr;}
+  .contact-side,.contact-form{padding:38px 26px;}
+  .section{padding:80px 0;}
+  .hero{padding-top:120px;}
+  .stat b{font-size:32px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header id="header">
+  <nav>
+    <a href="#home" class="logo">
+    <img src="images/vorexa-logo.png" alt="Vorexa Studio Logo">
+</a>
+    <div class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#services">Services</a>
+      <a href="#portfolio">Portfolio</a>
+      <a href="#workflow">Workflow</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="nav-right">
+      <a href="#contact" class="btn btn-primary" style="padding:12px 22px;font-size:13.5px;">Book a Meeting</a>
+      <div class="burger" id="burger"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="home">
+  <div class="hero-blob b1"></div>
+  <div class="hero-blob b2"></div>
+  <div class="hero-inner">
+    <div class="hero-top">
+      <span class="eyebrow">Innovation Beyond Reality</span>
+      <h1>Premium 3D Visualization<br><em>&amp; Asset Development</em> Studio</h1>
+      <p>We create production-ready 3D assets for e-commerce, manufacturing, AR/VR, web configurators and interactive experiences.</p>
+      <div class="hero-actions">
+        <a href="#portfolio" class="btn btn-primary">View Portfolio</a>
+        <a href="#services" class="btn btn-outline">Our Services</a>
+      </div>
+    </div>
+
+    <!-- 3D VIEWER -->
+    <div class="viewer-shell reveal">
+      <div class="viewer-stage" id="stage">
+        <div class="viewer-loading" id="viewerLoading"><span class="spin"></span>LOADING SCENE…</div>
+        <div class="viewer-topbar">
+          <div class="hud-chip glass">MODEL <b id="modelName">AURA — LOUNGE CHAIR</b></div>
+          <div class="hud-chip glass">FPS <b id="fpsCounter">60</b></div>
+        </div>
+        <div class="viewer-toolbar">
+          <div class="tool-group glass">
+            <button class="tool-btn" id="btnRotate" title="Auto Rotate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3.5-7.1"/><path d="M21 3v6h-6"/></svg></button>
+            <button class="tool-btn" id="btnReset" title="Reset Camera"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M3 3v6h6"/></svg></button>
+            <button class="tool-btn" id="btnFit" title="Fit to Screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m11-5v3a2 2 0 0 1-2 2h-3"/></svg></button>
+          </div>
+          <div class="tool-group glass">
+            <button class="tool-btn" id="btnShot" title="Screenshot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
+            <button class="tool-btn" id="btnFull" title="Fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m11-5v3a2 2 0 0 1-2 2h-3"/></svg></button>
+            <button class="tool-btn" id="btnDownload" title="Download GLB"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="viewer-panel glass">
+        <div class="panel-block" style="display:none;">
+          <h4>Material</h4>
+          <div class="swatch-row">
+            <button class="pill active" data-material="leather">Leather</button>
+            <button class="pill" data-material="fabric">Fabric</button>
+          </div>
+        </div>
+        <div class="panel-block" style="display:none;">
+          <h4>Color</h4>
+          <div class="color-row">
+            <button class="swatch active" style="background:#f4f4f2" data-color="#f4f4f2" title="White"></button>
+            <button class="swatch" style="background:#15181f" data-color="#15181f" title="Black"></button>
+            <button class="swatch" style="background:#3B82F6" data-color="#3B82F6" title="Blue"></button>
+            <button class="swatch" style="background:#dc4c4c" data-color="#dc4c4c" title="Red"></button>
+            <button class="swatch" style="background:#3f9f6f" data-color="#3f9f6f" title="Green"></button>
+          </div>
+        </div>
+        <div class="panel-block" style="display:none;">
+          <h4>Environment</h4>
+          <div class="swatch-row">
+            <button class="pill active" data-env="studio">Studio</button>
+            <button class="pill" data-env="day">Day</button>
+            <button class="pill" data-env="night">Night</button>
+            <button class="pill" data-env="outdoor">Outdoor</button>
+          </div>
+        </div>
+        <div class="panel-block">
+          <h4>Viewer Tools</h4>
+          <div class="tool-list">
+            <div class="tool-row" id="rowWire"><span>Wireframe</span><div class="toggle"></div></div>
+            <div class="tool-row" id="rowExplode" style="display:none;"><span>Exploded View</span><div class="toggle"></div></div>
+            <div class="tool-row" id="rowMeasure"><span>Measure Tool</span><div class="toggle"></div></div>
+            <div class="tool-row" id="rowAR"><span>AR Preview</span><div class="toggle"></div></div>
+          </div>
+        </div>
+        <div class="panel-block" style="margin-top:auto;">
+          <h4>Viewer Information</h4>
+          <div class="info-grid">
+            <div class="info-cell"><span>Triangles</span><b id="infoTris">18,420</b></div>
+            <div class="info-cell"><span>Vertices</span><b id="infoVerts">11,860</b></div>
+            <div class="info-cell"><span>Dimensions</span><b>82×76×88cm</b></div>
+            <div class="info-cell"><span>Texture</span><b>4096²px</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="toast glass" id="toast"></div>
+
+<!-- ============ STATS ============ -->
+<section style="padding:0 0 100px;">
+  <div class="stats-band reveal">
+    <div class="wrap">
+      <div class="stats-grid">
+        <div class="stat"><b data-count="500"><span>0</span>+</b><p>PROJECTS DELIVERED</p></div>
+        <div class="stat"><b data-count="300"><span>0</span>+</b><p>HAPPY CLIENTS</p></div>
+        <div class="stat"><b data-count="20"><span>0</span>+</b><p>INDUSTRIES</p></div>
+        <div class="stat"><b data-count="5"><span>0</span>+</b><p>YEARS EXPERIENCE</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section class="section" id="services">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">What We Do</span>
+      <h2>Full-stack 3D production, end to end</h2>
+      <p>From first sketch to shelf-ready configurator, every stage engineered to studio-grade precision.</p>
+    </div>
+    <div class="grid-4" id="servicesGrid"></div>
+  </div>
+</section>
+
+<!-- ============ PORTFOLIO ============ -->
+<section class="section" id="portfolio" style="background:var(--surface);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Selected Work</span>
+      <h2>Featured Portfolio</h2>
+      <p>A cross-industry sample of production assets — from CAD-accurate industrial parts to AR-ready retail products.</p>
+    </div>
+    <div class="filter-row reveal" id="filterRow"></div>
+    <div class="port-grid" id="portGrid"></div>
+  </div>
+</section>
+
+<!-- ============ WORKFLOW ============ -->
+<section class="section" id="workflow">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Process</span>
+      <h2>An eight-stage production pipeline</h2>
+      <p>Every project moves through the same disciplined sequence — nothing skipped, nothing rushed.</p>
+    </div>
+    <div class="flow-track reveal">
+      <div class="flow-line"><div class="flow-line-fill" id="flowFill"></div></div>
+      <div class="flow-grid" id="flowGrid"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SOFTWARE ============ -->
+<section class="section" style="background:var(--surface);">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Toolchain</span>
+      <h2>Industry-standard software</h2>
+    </div>
+    <div class="soft-grid reveal" id="softGrid"></div>
+  </div>
+</section>
+
+<!-- ============ WHY CHOOSE US ============ -->
+<section class="section" id="about">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Why Vorexa</span>
+      <h2>Built for demanding B2B pipelines</h2>
+    </div>
+    <div class="why-grid reveal" id="whyGrid"></div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS ============ -->
+<section class="section" style="background:var(--surface);">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Client Voices</span>
+      <h2>Trusted across 20+ industries</h2>
+    </div>
+    <div class="test-wrap reveal">
+      <div class="test-track" id="testTrack"></div>
+      <div class="test-dots" id="testDots"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="section" id="contact">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Get In Touch</span>
+      <h2>Start your next 3D project</h2>
+    </div>
+    <div class="contact-shell reveal">
+      <div class="contact-side">
+        <div>
+          <h3>Vorexa Studio</h3>
+          <p>We partner with product, engineering and marketing teams worldwide to ship photoreal 3D assets on schedule.</p>
+          <div class="contact-info">
+            <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>+1 (415) 555-0134</div>
+            <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>studio@vorexa.com</div>
+            <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>San Francisco, CA · Remote-first</div>
+          </div>
+        </div>
+        <div>
+          <div class="social-row">
+            <a href="#" title="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="color:#fff"><path d="M6.94 5a2 2 0 1 1-4-.002 2 2 0 0 1 4 .002zM7 8.48H3V21h4zM13.32 8.48H9.34V21h3.94v-6.57c0-3.66 4.77-3.96 4.77 0V21H22v-7.93c0-6.17-7.06-5.94-8.68-2.91z"/></svg></a>
+            <a href="#" title="ArtStation"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="color:#fff"><path d="M4 16.7 8.1 24h4.65l-4.1-7.3zm10.85-9.9L9.35 24H4.6l8.9-15.7zM19.9 16.5H9.5l1.35 2.4h6.65L20.2 22l1.35-2.4z"/></svg></a>
+            <a href="#" title="Behance"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="color:#fff"><path d="M7.8 12.15c1.05-.5 1.65-1.35 1.65-2.65 0-2.4-1.75-3.4-4-3.4H0v14h5.85c2.4 0 4.75-1.15 4.75-3.85 0-1.65-.85-2.8-2.8-4.1zM2.8 8.15h2.5c1 0 1.9.35 1.9 1.5 0 1.05-.7 1.6-1.9 1.6H2.8zm2.9 9.35H2.8v-3.6h2.95c1.3 0 2.1.6 2.1 1.8 0 1.25-.9 1.8-2.15 1.8zM24 13.15c0-3-1.85-5.4-5.05-5.4-3.1 0-5.35 2.3-5.35 5.7 0 3.55 2.4 5.65 5.55 5.65 2.15 0 3.9-.9 4.75-2.85l-2.2-.65c-.4.85-1.2 1.3-2.45 1.3-1.6 0-2.6-.95-2.75-2.55H24zM13.5 6.5h6.9V4.7h-6.9zM16.5 10.9c1.35 0 2.15.8 2.3 2.05h-4.75c.2-1.3 1.1-2.05 2.45-2.05z"/></svg></a>
+            <a href="#" title="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#fff"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+          </div>
+          
+<div class="trust-card">
+
+    <div class="trust-item">
+        <span>🚀</span>
+        <div>
+            <strong>Fast Turnaround</strong>
+            <small>On-time delivery</small>
+        </div>
+    </div>
+
+    <div class="trust-item">
+        <span>🌍</span>
+        <div>
+            <strong>Worldwide Remote</strong>
+            <small>Available across time zones</small>
+        </div>
+    </div>
+
+    <div class="trust-item">
+        <span>🔒</span>
+        <div>
+            <strong>NDA Friendly</strong>
+            <small>Secure & confidential workflow</small>
+        </div>
+    </div>
+
+    <div class="trust-item">
+        <span>⚡</span>
+        <div>
+            <strong>24 Hour Response</strong>
+            <small>Quick communication</small>
+        </div>
+    </div>
+
+</div>
+
+        </div>
+      </div>
+
+      <form class="contact-form" id="contactForm">
+        <div class="form-grid">
+          <div class="field"><label>Name</label><input id="name" type="text" required placeholder="Jordan Miles"></div>
+          <div class="field"><label>Email</label><input id="email" type="email" required placeholder="jordan@company.com"></div>
+          <div class="field"><label>Company</label><input id="company" type="text" placeholder="Company Inc."></div>
+          <div class="field"><label>Phone</label><input id="phone" type="tel" placeholder="+1 555 000 0000"></div>
+          <div class="field"><label>Budget</label>
+            <select id="timeline"><option>Under $10k</option><option>$10k – $30k</option><option>$30k – $75k</option><option>$75k+</option></select>
+          </div>
+          <div class="field"><label>Timeline</label>
+            <select id="timeline"><option>1–2 weeks</option><option>3–4 weeks</option><option>1–3 months</option><option>Ongoing</option></select>
+          </div>
+        </div>
+        <div class="field"><label>Project Description</label><textarea id="description" rows="4" placeholder="Tell us about your product, scope and goals…"></textarea></div>
+        <div class="field">
+    <label>Reference Files (Google Drive / Dropbox / OneDrive)</label>
+
+    <input
+        id="referenceLink"
+        type="url"
+        placeholder="https://drive.google.com/..."
+    >
+
+    <small style="opacity:.7">
+        Please share your files using Google Drive, Dropbox or OneDrive.
+    </small>
+</div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Send Inquiry</button>
+          <a href="#" id="bookMeetingBtn" class="btn btn-ghost">
+    Book Meeting
+</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="foot-grid">
+    <div class="foot-col">
+      <a href="#home" class="logo" style="margin-bottom:16px;"><span class="logo-mark"></span>Vorexa Studio</a>
+      <p style="max-width:260px;color:var(--gray);">Premium 3D visualization and asset development for global product teams. Innovation beyond reality.</p>
+    </div>
+    <div class="foot-col">
+      <h5>Quick Links</h5>
+      <a href="#services">Services</a><a href="#portfolio">Portfolio</a><a href="#workflow">Workflow</a><a href="#contact">Contact</a>
+    </div>
+    <div class="foot-col">
+      <h5>Services</h5>
+      <a href="#">3D Modeling</a><a href="#">PBR Texturing</a><a href="#">AR / VR Assets</a><a href="#">Configurators</a>
+    </div>
+    <div class="foot-col">
+      <h5>Contact</h5>
+      <a href="mailto:studio@vorexa.com">studio@vorexa.com</a>
+      <a href="tel:+14155550134">+1 (415) 555-0134</a>
+      <a href="#">LinkedIn</a><a href="#">ArtStation</a><a href="#">Behance</a><a href="#">Instagram</a>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 Vorexa Studio. All rights reserved.</span>
+    <span>Innovation Beyond Reality</span>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script>
+/* ============================================================
+   DATA
+============================================================ */
+const ICONS = {
+  model:'<path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/>',
+  texture:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>',
+  uv:'<path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/>',
+  render:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  anim:'<circle cx="12" cy="5" r="2"/><path d="M12 7v6l4 2M6 21l3-6 3 3 3-7 3 10"/>',
+  optimize:'<path d="m13 2-8 11h6l-1 9 8-11h-6z"/>',
+  arvr:'<rect x="2" y="7" width="20" height="10" rx="4"/><circle cx="8" cy="12" r="1.6"/><circle cx="16" cy="12" r="1.6"/>',
+  config:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 0 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 0 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 0 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 0 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/>',
+  chair:'<path d="M6 3v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3M6 15v6M18 15v6M9 21v-2M15 21v-2"/>',
+  phone:'<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',
+  cross:'<path d="M9 2v6H3v8h6v6h6v-6h6V8h-6V2z"/>',
+  gear:'<circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.2 4.2l2.8 2.8M17 17l2.8 2.8M1 12h4M19 12h4M4.2 19.8 7 17M17 7l2.8-2.8"/>',
+  building:'<path d="M3 21h18M6 21V8l6-4 6 4v13M9 21v-6h6v6"/>',
+  car:'<path d="M5 17h14M5 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM19 17a2 2 0 1 0 4 0 2 2 0 0 0-4 0zM3 17V11l2-5h14l2 5v6"/>'
+};
+const svg = (path,vb='0 0 24 24')=>`<svg viewBox="${vb}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
+
+const SERVICES=[
+  {icon:'model',t:'3D Modeling',d:'Precision hard-surface and organic modeling built to real-world tolerances.'},
+  {icon:'texture',t:'PBR Texturing',d:'Physically based materials tuned for photoreal render engines.'},
+  {icon:'uv',t:'UV Mapping',d:'Clean, efficient unwraps optimized for texel density and bake fidelity.'},
+  {icon:'render',t:'Rendering',d:'Studio-grade stills and turntables with full HDRI lighting control.'},
+  {icon:'anim',t:'Animation',d:'Product reveals, mechanism cycles and rigged character motion.'},
+  {icon:'optimize',t:'Optimization',d:'Poly reduction and LOD pipelines tuned for web and real-time engines.'},
+  {icon:'arvr',t:'AR / VR Assets',d:'USDZ and GLB export pipelines ready for AR Quick Look and WebXR.'},
+  {icon:'config',t:'Product Configurator',d:'Real-time variant systems for material, color and component swaps.'}
+];
+
+const CATS=['All','Furniture','Electronics','Medical','Industrial','Architecture','Automotive'];
+const PROJECTS = [
+
+{
+    cat:'Furniture',
+    t:'Aura Lounge Chair',
+    thumb:'images/chair.jpg',
+    model:'models/chair.glb'
+},
+
+{
+    cat:'Electronics',
+    t:'Nova Handset Series',
+    thumb:'images/mobile.jpg',
+    model:'models/mobile.glb'
+},
+
+{
+    cat:'Medical',
+    t:'Precision Infusion Pump',
+    thumb:'images/medical.jpg',
+    model:'models/medical.glb'
+},
+
+{
+    cat:'Industrial',
+    t:'Modular Gearbox Unit',
+    thumb:'images/gearbox.jpg',
+    model:'models/gearbox.glb'
+},
+
+{
+    cat:'Architecture',
+    t:'Meridian Tower',
+    thumb:'images/building.jpg',
+    model:'models/building.glb'
+},
+
+{
+    cat:'Automotive',
+    t:'Halo EV Concept',
+    thumb:'images/car.jpg',
+    model:'models/car.glb'
+}
+
+];
+
+const WORKFLOW=[
+  {t:'Requirement',d:'Scope, references and technical spec are locked with the client.'},
+  {t:'Reference',d:'CAD, photography and material references are gathered and audited.'},
+  {t:'Modeling',d:'High and low poly geometry built to production tolerance.'},
+  {t:'UV Mapping',d:'Efficient unwraps prepared for texture baking.'},
+  {t:'Texturing',d:'PBR material authoring in Substance Painter.'},
+  {t:'Rendering',d:'Lighting, camera and turntable passes are finalized.'},
+  {t:'Optimization',d:'Poly and texture budgets tuned for target platform.'},
+  {t:'Delivery',d:'Final assets packaged across required file formats.'}
+];
+
+const SOFTWARE = [
+
+{
+    t:"Blender",
+    img:"images/blender.svg"
+},
+
+{
+    t:"3ds Max",
+    img:"images/3dsmax.svg"
+},
+
+{
+    t:"Substance Painter",
+    img:"images/substance.svg"
+},
+
+{
+    t:"Marmoset",
+    img:"images/marmoset.svg"
+},
+
+{
+    t:"Photoshop",
+    img:"images/photoshop.svg"
+},
+
+{
+    t:"Unreal Engine",
+    img:"images/unreal.svg"
+},
+
+{
+    t:"Maya",
+    img:"images/maya.svg"
+}
+
+];
+
+const WHY=[
+  {t:'Production Ready Assets'},{t:'Realistic PBR Materials'},{t:'CAD Accuracy'},{t:'AR Ready'},
+  {t:'Fast Delivery'},{t:'International Quality Standards'},{t:'Dedicated Support'},{t:'Flexible File Formats'}
+];
+
+const TESTIMONIALS=[
+  {q:'Vorexa rebuilt our entire furniture catalog in 3D — conversion on configurator pages jumped noticeably within the first quarter.',n:'Elena Kruger',r:'Head of E-commerce · Germany'},
+  {q:'CAD accuracy was non-negotiable for our medical device training tool. Vorexa hit tolerance on the first delivery.',n:'Michael Osei',r:'Product Lead · United States'},
+  {q:'Fastest turnaround we have had from a 3D studio, without cutting corners on material realism.',n:'Haruki Sato',r:'Creative Director · Japan'},
+  {q:'The AR export pipeline just worked — QuickLook, WebXR, everything shipped on the first pass.',n:'Priya Nair',r:'CTO · Singapore'}
+];
+
+/* ============================================================
+   BUILD DOM FROM DATA
+============================================================ */
+document.getElementById('servicesGrid').innerHTML = SERVICES.map(s=>`
+  <div class="serv-card reveal">
+    <div class="serv-icon">${svg(ICONS[s.icon])}</div>
+    <h3>${s.t}</h3><p>${s.d}</p>
+  </div>`).join('');
+
+document.getElementById('filterRow').innerHTML = CATS.map((c,i)=>
+  `<button class="pill ${i===0?'active':''}" data-filter="${c}">${c}</button>`).join('');
+
+document.getElementById('portGrid').innerHTML = PROJECTS.map(p=>`
+  <div class="port-card reveal" data-cat="${p.cat}">
+    <div class="port-visual">
+
+<img src="${p.thumb}"
+     alt="${p.t}"
+     class="project-thumb">
+
+</div>
+    <div class="port-body">
+      <span class="tag">${p.cat}</span>
+      <h3>${p.t}</h3><p>${p.d}</p>
+      <div class="port-actions">
+        <a class="btn btn-outline" href="#">View Case Study</a>
+        <a
+    class="btn btn-ghost open-viewer"
+    href="#home"
+    data-model="${p.model}">
+    Open 3D Viewer
+</a>
+      </div>
+    </div>
+  </div>`).join('');
+
+document.getElementById('flowGrid').innerHTML = WORKFLOW.map((w,i)=>`
+  <div class="flow-step reveal" data-i="${i}">
+    <div class="flow-dot">${String(i+1).padStart(2,'0')}</div>
+    <div><h4>${w.t}</h4><p>${w.d}</p></div>
+  </div>`).join('');
+
+document.getElementById('softGrid').innerHTML =
+SOFTWARE.map((s,i)=>`
+
+<div class="soft-card reveal glass">
+
+<img src="${s.img}" alt="${s.t}" class="software-logo">
+
+<span>${s.t}</span>
+
+</div>
+
+`).join('');
+
+document.getElementById('whyGrid').innerHTML = WHY.map((w,i)=>`
+  <div class="why-item reveal"><span class="why-num">${String(i+1).padStart(2,'0')}</span><h4>${w.t}</h4></div>`).join('');
+
+document.getElementById('testTrack').innerHTML = TESTIMONIALS.map(t=>`
+  <div class="test-slide"><div class="test-card glass">
+    <div class="stars">★★★★★</div>
+    <p class="test-quote">"${t.q}"</p>
+    <div class="test-person"><div class="avatar">${t.n.split(' ').map(x=>x[0]).join('')}</div><div><b>${t.n}</b><span>${t.r}</span></div></div>
+  </div></div>`).join('');
+document.getElementById('testDots').innerHTML = TESTIMONIALS.map((_,i)=>`<span data-i="${i}" class="${i===0?'on':''}"></span>`).join('');
+
+/* ============================================================
+   NAV
+============================================================ */
+const header=document.getElementById('header');
+window.addEventListener('scroll',()=>header.classList.toggle('scrolled',window.scrollY>20));
+document.getElementById('burger').onclick=()=>{
+  const nl=document.querySelector('.nav-links');
+  nl.style.display = nl.style.display==='flex' ? 'none':'flex';
+  nl.style.cssText+= 'position:fixed;top:70px;left:20px;right:20px;background:#fff;flex-direction:column;padding:20px;border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,.12);z-index:200;';
+};
+
+/* ============================================================
+   REVEAL ON SCROLL
+============================================================ */
+const io=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+},{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ============================================================
+   RIPPLE
+============================================================ */
+document.querySelectorAll('.btn').forEach(b=>{
+  b.addEventListener('click',function(e){
+    const r=document.createElement('span');
+    const rect=this.getBoundingClientRect();
+    r.className='ripple';
+    r.style.left=(e.clientX-rect.left)+'px';
+    r.style.top=(e.clientY-rect.top)+'px';
+    this.appendChild(r);
+    setTimeout(()=>r.remove(),650);
+  });
+});
+
+/* ============================================================
+   HERO MOUSE-FOLLOW GRADIENT
+============================================================ */
+const heroEl=document.querySelector('.hero');
+heroEl.addEventListener('mousemove',(e)=>{
+  const r=heroEl.getBoundingClientRect();
+  heroEl.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');
+  heroEl.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');
+});
+
+/* ============================================================
+   STAT COUNTERS
+============================================================ */
+document.querySelectorAll('.stat b').forEach(el=>{
+  const target=+el.dataset.count, span=el.querySelector('span');
+  const io2=new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        let cur=0; const step=Math.max(1,Math.ceil(target/50));
+        const t=setInterval(()=>{ cur+=step; if(cur>=target){cur=target;clearInterval(t);} span.textContent=cur; },30);
+        io2.unobserve(el);
+      }
+    });
+  },{threshold:.5});
+  io2.observe(el);
+});
+
+/* ============================================================
+   WORKFLOW LINE FILL
+============================================================ */
+const flowIO=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      document.getElementById('flowFill').style.width='100%';
+      document.querySelectorAll('.flow-step').forEach((s,i)=>setTimeout(()=>s.classList.add('on'),i*120));
+      flowIO.disconnect();
+    }
+  });
+},{threshold:.3});
+flowIO.observe(document.querySelector('.flow-track'));
+
+/* ============================================================
+   PORTFOLIO FILTER
+============================================================ */
+document.getElementById('filterRow').addEventListener('click',(e)=>{
+  const btn=e.target.closest('.pill'); if(!btn) return;
+  document.querySelectorAll('#filterRow .pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  const f=btn.dataset.filter;
+  document.querySelectorAll('.port-card').forEach(c=>{
+    c.classList.toggle('hide', f!=='All' && c.dataset.cat!==f);
+  });
+});
+document.querySelectorAll('.open-viewer').forEach(btn=>{
+
+    btn.addEventListener('click',function(e){
+
+        e.preventDefault();
+
+        // Viewer tak smooth scroll
+        document.getElementById('home').scrollIntoView({
+            behavior:'smooth'
+        });
+
+        // Naya GLB load
+        loadProductModel(this.dataset.model);
+
+    });
+
+});
+
+/* ============================================================
+   TESTIMONIAL CAROUSEL
+============================================================ */
+let testIdx=0;
+const testTrack=document.getElementById('testTrack');
+function goTest(i){
+  testIdx=(i+TESTIMONIALS.length)%TESTIMONIALS.length;
+  testTrack.style.transform=`translateX(-${testIdx*100}%)`;
+  document.querySelectorAll('#testDots span').forEach((d,j)=>d.classList.toggle('on',j===testIdx));
+}
+document.getElementById('testDots').addEventListener('click',(e)=>{
+  if(e.target.dataset.i!==undefined) goTest(+e.target.dataset.i);
+});
+setInterval(()=>goTest(testIdx+1),5000);
+
+/* ============================================================
+   CONTACT FORM
+============================================================ */
+document.getElementById("contactForm").addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    const btn=this.querySelector("button[type='submit']");
+
+    btn.disabled=true;
+
+    btn.innerHTML="Sending...";
+
+    const templateParams={
+
+        name:document.getElementById("name").value,
+
+        email:document.getElementById("email").value,
+
+        company:document.getElementById("company").value,
+
+        phone:document.getElementById("phone").value,
+
+        budget:document.getElementById("budget").value,
+
+        timeline:document.getElementById("timeline").value,
+
+        description:document.getElementById("description").value,
+
+        referenceLink:document.getElementById("referenceLink").value
+
+    };
+
+    emailjs.send(
+
+        "YOUR_SERVICE_ID",
+
+        "YOUR_TEMPLATE_ID",
+
+        templateParams
+
+    ).then(()=>{
+
+        showToast("✅ Inquiry sent successfully!");
+
+        this.reset();
+
+    }).catch(()=>{
+
+        showToast("❌ Failed to send inquiry.");
+
+    }).finally(()=>{
+
+        btn.disabled=false;
+
+        btn.innerHTML="Send Inquiry";
+
+    });
+
+});
+
+/* ============================================================
+   TOAST
+============================================================ */
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+/* ============================================================
+   3D VIEWER (three.js, hand-rolled orbit controls)
+============================================================ */
+(function(){
+  const stage=document.getElementById('stage');
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(38, stage.clientWidth/stage.clientHeight, .1, 100);
+  const defaultCamPos=new THREE.Vector3(3.6,2.1,4.2);
+  camera.position.copy(defaultCamPos);
+
+  const renderer=new THREE.WebGLRenderer({antialias:true, preserveDrawingBuffer:true, alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setSize(stage.clientWidth, stage.clientHeight);
+  renderer.shadowMap.enabled=true;
+  renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  stage.appendChild(renderer.domElement);
+
+  // lights
+  const hemi=new THREE.HemisphereLight(0xffffff,0xc9d6e8,.9); scene.add(hemi);
+  const key=new THREE.DirectionalLight(0xffffff,1.15);
+  key.position.set(4,6,4); key.castShadow=true;
+  key.shadow.mapSize.set(1024,1024);
+  key.shadow.camera.left=-4; key.shadow.camera.right=4; key.shadow.camera.top=4; key.shadow.camera.bottom=-4;
+  scene.add(key);
+  const rim=new THREE.DirectionalLight(0x8fb8ff,.6); rim.position.set(-4,2,-3); scene.add(rim);
+
+  // floor
+  const floorMat=new THREE.ShadowMaterial({opacity:.14});
+  const floor=new THREE.Mesh(new THREE.CircleGeometry(6,64), floorMat);
+  floor.rotation.x=-Math.PI/2; floor.position.y=-.86; floor.receiveShadow=true;
+  scene.add(floor);
+  const ring=new THREE.Mesh(new THREE.RingGeometry(1.55,1.58,64), new THREE.MeshBasicMaterial({color:0x3B82F6,transparent:true,opacity:.25,side:THREE.DoubleSide}));
+  ring.rotation.x=-Math.PI/2; ring.position.y=-.859; scene.add(ring);
+
+  const ENV_BG={studio:['#eef3fb','#ffffff'],day:['#dcecff','#ffffff'],night:['#161b28','#0b0f19'],outdoor:['#cfe8d9','#f2f8ee']};
+  function setEnv(name){
+    const [c1]=ENV_BG[name];
+    stage.style.background = name==='night'
+      ? `linear-gradient(180deg,${ENV_BG.night[0]} 0%, ${ENV_BG.night[1]} 100%)`
+      : `linear-gradient(180deg,${c1} 0%, #f8fafd 60%, #ffffff 100%)`;
+    hemi.intensity = name==='night' ? .35 : name==='outdoor' ? 1.05 : .9;
+    key.intensity = name==='night' ? .5 : name==='day' ? 1.35 : 1.15;
+    key.color.set(name==='night' ? 0x8fb2ff : 0xffffff);
+    scene.background=null;
+  }
+  setEnv('studio');
+
+  // --- generic GLB product loader (works with any model dropped into models/product.glb) ---
+  const modelGroup=new THREE.Group();
+  scene.add(modelGroup);
+
+  const FLOOR_Y=floor.position.y;        // model base sits exactly on the existing floor
+  const TARGET_SIZE=1.7;                  // normalized "fit" size inside the viewer
+  const clock=new THREE.Clock();
+
+  let currentModel=null;     // root Object3D of the loaded glTF scene
+  let meshList=[];           // every THREE.Mesh found inside the model (any depth)
+  let mixer=null;            // AnimationMixer, created only if the GLB has animation clips
+  let explodeRig=[];         // per-child explode data, rebuilt for whichever model is loaded
+  let lookTarget=new THREE.Vector3(0,-.05,0);
+  let fitDist=camera.position.length();
+
+  function disposeMaterial(mat){
+    if(!mat) return;
+    Object.keys(mat).forEach(k=>{ const v=mat[k]; if(v && v.isTexture) v.dispose(); });
+    mat.dispose();
+  }
+  function clearCurrentModel(){
+    if(!currentModel) return;
+    currentModel.traverse(child=>{
+      if(child.isMesh){
+        child.geometry?.dispose();
+        (Array.isArray(child.material)?child.material:[child.material]).forEach(disposeMaterial);
+      }
+    });
+    modelGroup.remove(currentModel);
+    currentModel=null; meshList=[]; mixer=null; explodeRig=[];
+  }
+
+  function prepareExplodeRig(root){
+    explodeRig=[];
+    const centerLocal=new THREE.Box3().setFromObject(root).getCenter(new THREE.Vector3());
+    root.children.forEach(child=>{
+      const childBox=new THREE.Box3().setFromObject(child);
+      if(childBox.isEmpty()) return;
+      const childCenter=childBox.getCenter(new THREE.Vector3());
+      const dir=childCenter.clone().sub(centerLocal);
+      if(dir.lengthSq()<1e-6) dir.set(Math.random()-.5,Math.random()-.5,Math.random()-.5);
+      dir.normalize();
+      explodeRig.push({obj:child, dir, orig:child.position.clone()});
+    });
+  }
+
+  function forEachMaterial(fn){
+    meshList.forEach(m=>{
+      const mats=Array.isArray(m.material)?m.material:[m.material];
+      mats.forEach(mat=>{ if(mat) fn(mat); });
+    });
+  }
+
+  function updateCam(){
+    camera.position.set(
+      dist*Math.cos(rotX)*Math.sin(rotY),
+      dist*Math.sin(rotX)+lookTarget.y+.5,
+      dist*Math.cos(rotX)*Math.cos(rotY)
+    );
+    camera.lookAt(lookTarget);
+  }
+
+  // ------ interaction state ------
+  let autoRotate=false, wireframe=false, exploded=false;
+  let rotX=-0.12, rotY=0.55, dist=camera.position.length();
+  let dragging=false, lastX=0,lastY=0;
+  updateCam();
+
+  function loadProductModel(url){
+    document.getElementById('viewerLoading').style.display='flex';
+    document.getElementById('viewerLoading').style.opacity='1';
+    document.getElementById('viewerLoading').innerHTML='<span class="spin"></span>LOADING SCENE…';
+   
+
+    const loader=new THREE.GLTFLoader();
+    loader.load(url, (gltf)=>{
+      clearCurrentModel();
+      const root=gltf.scene || (gltf.scenes && gltf.scenes[0]);
+      if(!root){ throw new Error('GLTF file contains no scene'); }
+
+      // 1) center model on X/Z, drop base to y=0 first
+      let box=new THREE.Box3().setFromObject(root);
+      let size=box.getSize(new THREE.Vector3());
+      let center=box.getCenter(new THREE.Vector3());
+      root.position.x-=center.x;
+      root.position.z-=center.z;
+      root.position.y-=box.min.y;
+
+      // 2) scale to fit viewer regardless of the model's native units
+      const maxDim=Math.max(size.x,size.y,size.z)||1;
+      const scale=TARGET_SIZE/maxDim;
+      root.scale.setScalar(scale);
+
+      // 3) re-measure after scaling and rest the model exactly on the floor
+      box=new THREE.Box3().setFromObject(root);
+      root.position.y+=(FLOOR_Y-box.min.y);
+
+      // 4) collect meshes, enable shadows, guard against multi-material / nested groups
+      meshList=[];
+      root.traverse(child=>{
+        if(child.isMesh){
+          child.castShadow=true;
+          child.receiveShadow=true;
+          meshList.push(child);
+        }
+      });
+
+      modelGroup.add(root);
+      currentModel=root;
+      prepareExplodeRig(root);
+
+      // 5) play every animation clip found in the GLB, if any
+      if(gltf.animations && gltf.animations.length){
+        mixer=new THREE.AnimationMixer(root);
+        gltf.animations.forEach(clip=>mixer.clipAction(clip).play());
+      }
+
+      // 6) auto-fit camera to the final bounding box
+      const finalBox=new THREE.Box3().setFromObject(root);
+      const finalSize=finalBox.getSize(new THREE.Vector3());
+      const finalCenter=finalBox.getCenter(new THREE.Vector3());
+      lookTarget.copy(finalCenter);
+      const radius=finalSize.length()/2 || 1;
+      fitDist=Math.max(2.4, Math.min(8, radius/Math.sin((camera.fov*Math.PI/180)/2)));
+      dist=fitDist;
+      updateCam();
+
+      // reapply whatever toggle states are currently active
+      if(wireframe) forEachMaterial(mat=>mat.wireframe=true);
+
+      document.getElementById('infoTris').textContent=meshList.reduce((n,m)=>n+(m.geometry.index?m.geometry.index.count/3:m.geometry.attributes.position.count/3),0).toLocaleString(undefined,{maximumFractionDigits:0});
+      document.getElementById('infoVerts').textContent=meshList.reduce((n,m)=>n+m.geometry.attributes.position.count,0).toLocaleString();
+
+      document.getElementById('viewerLoading').style.opacity='0';
+      setTimeout(()=>{ document.getElementById('viewerLoading').style.display='none'; },500);
+    }, undefined, (err)=>{
+      console.error('Vorexa Viewer: failed to load GLB model at "'+url+'". The viewer expects a valid glTF binary at this path.', err);
+      document.getElementById('viewerLoading').innerHTML='MODEL UNAVAILABLE';
+    });
+  }
+
+  renderer.domElement.addEventListener('pointerdown',(e)=>{dragging=true;lastX=e.clientX;lastY=e.clientY;});
+  window.addEventListener('pointerup',()=>dragging=false);
+  window.addEventListener('pointermove',(e)=>{
+    if(!dragging) return;
+    const dx=e.clientX-lastX, dy=e.clientY-lastY;
+    rotY-=dx*0.0055; rotX=Math.max(-0.5,Math.min(0.75,rotX+dy*0.0045));
+    lastX=e.clientX; lastY=e.clientY;
+    updateCam();
+  });
+  renderer.domElement.addEventListener('wheel',(e)=>{
+    e.preventDefault();
+    dist=Math.max(2.6,Math.min(7,dist+e.deltaY*0.0018));
+    updateCam();
+  },{passive:false});
+
+  // color / material — applied across every mesh/material found in the loaded GLB
+  document.querySelectorAll('[data-color]').forEach(sw=>{
+    sw.addEventListener('click',()=>{
+      document.querySelectorAll('[data-color]').forEach(s=>s.classList.remove('active'));
+      sw.classList.add('active');
+      forEachMaterial(mat=>{ if(mat.color) mat.color.set(sw.dataset.color); mat.needsUpdate=true; });
+    });
+  });
+  document.querySelectorAll('[data-material]').forEach(p=>{
+    p.addEventListener('click',()=>{
+      document.querySelectorAll('[data-material]').forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      const leather=p.dataset.material==='leather';
+      forEachMaterial(mat=>{
+        if('roughness' in mat) mat.roughness = leather ? .4 : .85;
+        if('clearcoat' in mat) mat.clearcoat = leather ? .4 : 0;
+        mat.needsUpdate=true;
+      });
+    });
+  });
+  document.querySelectorAll('[data-env]').forEach(p=>{
+    p.addEventListener('click',()=>{
+      document.querySelectorAll('[data-env]').forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      setEnv(p.dataset.env);
+      showToast('Environment set to '+p.textContent);
+    });
+  });
+
+  // toggles
+  function bindToggle(id,onChange){
+    const row=document.getElementById(id);
+    row.addEventListener('click',()=>{
+      const on=row.classList.toggle('on');
+      onChange(on);
+    });
+  }
+  bindToggle('rowWire',(on)=>{ wireframe=on; forEachMaterial(mat=>mat.wireframe=on); });
+  bindToggle('rowExplode',(on)=>{
+    exploded=on;
+    explodeRig.forEach(({obj,dir,orig})=>{
+      obj.position.copy(on ? orig.clone().add(dir.clone().multiplyScalar(.6)) : orig);
+    });
+  });
+  bindToggle('rowMeasure',(on)=>{ showToast(on?'Measure tool active — click two points on the model':'Measure tool disabled'); });
+  bindToggle('rowAR',(on)=>{ showToast(on?'AR Preview ready — scan the on-screen QR from your device':'AR Preview closed'); });
+
+  document.getElementById('btnRotate').addEventListener('click',function(){ autoRotate=!autoRotate; this.classList.toggle('active',autoRotate); });
+  document.getElementById('btnReset').addEventListener('click',()=>{ rotX=-0.12; rotY=0.55; dist=fitDist||defaultCamPos.length(); updateCam(); showToast('Camera reset'); });
+  document.getElementById('btnFit').addEventListener('click',()=>{ dist=fitDist||defaultCamPos.length(); rotX=-0.1; updateCam(); showToast('Fit to screen'); });
+  document.getElementById('btnFull').addEventListener('click',()=>{
+    if(!document.fullscreenElement){ stage.requestFullscreen?.(); } else { document.exitFullscreen?.(); }
+  });
+  document.getElementById('btnShot').addEventListener('click',()=>{
+    renderer.render(scene,camera);
+    const url=renderer.domElement.toDataURL('image/png');
+    const a=document.createElement('a'); a.href=url; a.download='vorexa-viewport.png'; a.click();
+    showToast('Screenshot saved');
+  });
+  document.getElementById('btnDownload').addEventListener('click',()=>{
+    showToast('Production GLB export queued — check your inbox shortly');
+  });
+
+  window.addEventListener('resize',()=>{
+    camera.aspect=stage.clientWidth/stage.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(stage.clientWidth, stage.clientHeight);
+  });
+
+  let lastT=performance.now(), frames=0, fpsAcc=0;
+  function animate(t){
+    requestAnimationFrame(animate);
+    if(autoRotate){ rotY+=0.0042; updateCam(); }
+    ring.rotation.z += 0.0015;
+    if(mixer) mixer.update(clock.getDelta());
+    renderer.render(scene,camera);
+    frames++;
+    if(t-lastT>500){ document.getElementById('fpsCounter').textContent=Math.round(frames*1000/(t-lastT)); frames=0; lastT=t; }
+  }
+  requestAnimationFrame(animate);
+  window.loadProductModel = loadProductModel;
+
+  // load the product model — swap models/product.glb on the server to change the displayed asset,
+  // no code changes required
+ loadProductModel("models/chair.glb");
+})();
+document.getElementById("bookMeetingBtn").addEventListener("click", function(e){
+    e.preventDefault();
+
+    Calendly.initPopupWidget({
+        url: "https://calendly.com/YOUR_USERNAME/discovery-call"
+    });
+
+    return false;
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+emailjs.init({
+    publicKey: "YOUR_PUBLIC_KEY",
+});
+</script>
+<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+
+<script src="https://assets.calendly.com/assets/external/widget.js"></script>
+</body>
+</html>
