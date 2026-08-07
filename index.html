@@ -1475,5 +1475,27 @@ document.getElementById("bookMeetingBtn").addEventListener("click", function(e){
 <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
 
 <script src="https://assets.calendly.com/assets/external/widget.js"></script>
+<script type="module">
+  import { getCalApi } from "https://cdn.cal.com/embed/embed.js";
+
+  (async function () {
+    const cal = await getCalApi();
+
+    cal("ui", {
+      theme: "light",
+      styles: {
+        branding: { brandColor: "#2563eb" }
+      }
+    });
+
+    document.getElementById("bookMeetingBtn").addEventListener("click", function (e) {
+      e.preventDefault();
+
+      cal("modal", {
+        calLink: "heyvorexa/30min"
+      });
+    });
+  })();
+</script>
 </body>
 </html>
