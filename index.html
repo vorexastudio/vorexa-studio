@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vorexa Studio — Innovation Beyond Reality</title>
 <link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="stylesheet" href="css/viewer.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.185.1/examples/jsm/"
+  }
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -428,6 +437,40 @@ footer{padding:70px 32px 30px;border-top:1px solid var(--line);margin-top:60px;}
   .stat b{font-size:32px;}
 }
 </style>
+
+<style>
+/* ===== Vorexa integration for the new GLBViewer ===== */
+.viewer-stage{
+  position:relative;
+  min-height:540px;
+  overflow:hidden;
+}
+.viewer-stage > #viewer{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  min-height:540px;
+}
+.viewer-stage .glbv-container{
+  width:100%;
+  height:100%;
+  min-height:540px;
+}
+.viewer-stage .glbv-canvas-host,
+.viewer-stage .glbv-canvas{
+  width:100%;
+  height:100%;
+}
+@media(max-width:720px){
+  .viewer-stage,
+  .viewer-stage > #viewer,
+  .viewer-stage .glbv-container{
+    min-height:420px;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -469,26 +512,12 @@ footer{padding:70px 32px 30px;border-top:1px solid var(--line);margin-top:60px;}
 
     <!-- 3D VIEWER -->
     <div class="viewer-shell reveal">
+      <!-- RED AREA: the new GLBViewer takes over this container only. -->
       <div class="viewer-stage" id="stage">
-        <div class="viewer-loading" id="viewerLoading"><span class="spin"></span>LOADING SCENE…</div>
-        <div class="viewer-topbar">
-          <div class="hud-chip glass">MODEL <b id="modelName">AURA — LOUNGE CHAIR</b></div>
-          <div class="hud-chip glass">FPS <b id="fpsCounter">60</b></div>
-        </div>
-        <div class="viewer-toolbar">
-          <div class="tool-group glass">
-            <button class="tool-btn" id="btnRotate" title="Auto Rotate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3.5-7.1"/><path d="M21 3v6h-6"/></svg></button>
-            <button class="tool-btn" id="btnReset" title="Reset Camera"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M3 3v6h6"/></svg></button>
-            <button class="tool-btn" id="btnFit" title="Fit to Screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m11-5v3a2 2 0 0 1-2 2h-3"/></svg></button>
-          </div>
-          <div class="tool-group glass">
-            <button class="tool-btn" id="btnShot" title="Screenshot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
-            <button class="tool-btn" id="btnFull" title="Fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m11-5v3a2 2 0 0 1-2 2h-3"/></svg></button>
-            <button class="tool-btn" id="btnDownload" title="Download GLB"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
-          </div>
-        </div>
+        <div id="viewer" class="glbv-container"></div>
       </div>
 
+      <!-- GREEN AREA: intentionally kept unchanged. -->
       <div class="viewer-panel glass">
         <div class="panel-block" style="display:none;">
           <h4>Material</h4>
@@ -519,19 +548,19 @@ footer{padding:70px 32px 30px;border-top:1px solid var(--line);margin-top:60px;}
         <div class="panel-block">
           <h4>Viewer Tools</h4>
           <div class="tool-list">
-            <div class="tool-row" id="rowWire"><span>Wireframe</span><div class="toggle"></div></div>
+            <div class="tool-row" id="rowWire" style="display:none;"><span>Wireframe</span><div class="toggle"></div></div>
             <div class="tool-row" id="rowExplode" style="display:none;"><span>Exploded View</span><div class="toggle"></div></div>
             <div class="tool-row" id="rowMeasure"><span>Measure Tool</span><div class="toggle"></div></div>
-            <div class="tool-row" id="rowAR"><span>AR Preview</span><div class="toggle"></div></div>
+            <div class="tool-row" id="rowAR" style="display:none;"><span>AR Preview</span><div class="toggle"></div></div>
           </div>
         </div>
         <div class="panel-block" style="margin-top:auto;">
           <h4>Viewer Information</h4>
           <div class="info-grid">
-            <div class="info-cell"><span>Triangles</span><b id="infoTris">18,420</b></div>
-            <div class="info-cell"><span>Vertices</span><b id="infoVerts">11,860</b></div>
-            <div class="info-cell"><span>Dimensions</span><b>82×76×88cm</b></div>
-            <div class="info-cell"><span>Texture</span><b>4096²px</b></div>
+            <div class="info-cell"><span>Triangles</span><b id="infoTris">—</b></div>
+            <div class="info-cell"><span>Vertices</span><b id="infoVerts">—</b></div>
+            <div class="info-cell"><span>Dimensions</span><b id="infoDims">—</b></div>
+            <div class="info-cell"><span>Texture</span><b id="infoTexture">—</b></div>
           </div>
         </div>
       </div>
@@ -767,8 +796,6 @@ footer{padding:70px 32px 30px;border-top:1px solid var(--line);margin-top:60px;}
   </div>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script>
 /* ============================================================
    DATA
@@ -1168,305 +1195,18 @@ function showToast(msg){
   toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
 }
 
-/* ============================================================
-   3D VIEWER (three.js, hand-rolled orbit controls)
-============================================================ */
-(function(){
-  const stage=document.getElementById('stage');
-  const scene=new THREE.Scene();
-  const camera=new THREE.PerspectiveCamera(38, stage.clientWidth/stage.clientHeight, .1, 100);
-  const defaultCamPos=new THREE.Vector3(3.6,2.1,4.2);
-  camera.position.copy(defaultCamPos);
-
-  const renderer=new THREE.WebGLRenderer({antialias:true, preserveDrawingBuffer:true, alpha:true});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-  renderer.setSize(stage.clientWidth, stage.clientHeight);
-  renderer.shadowMap.enabled=true;
-  renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-  renderer.outputEncoding = THREE.sRGBEncoding;
-  stage.appendChild(renderer.domElement);
-
-  // lights
-  const hemi=new THREE.HemisphereLight(0xffffff,0xc9d6e8,.9); scene.add(hemi);
-  const key=new THREE.DirectionalLight(0xffffff,1.15);
-  key.position.set(4,6,4); key.castShadow=true;
-  key.shadow.mapSize.set(1024,1024);
-  key.shadow.camera.left=-4; key.shadow.camera.right=4; key.shadow.camera.top=4; key.shadow.camera.bottom=-4;
-  scene.add(key);
-  const rim=new THREE.DirectionalLight(0x8fb8ff,.6); rim.position.set(-4,2,-3); scene.add(rim);
-
-  // floor
-  const floorMat=new THREE.ShadowMaterial({opacity:.14});
-  const floor=new THREE.Mesh(new THREE.CircleGeometry(6,64), floorMat);
-  floor.rotation.x=-Math.PI/2; floor.position.y=-.86; floor.receiveShadow=true;
-  scene.add(floor);
-  const ring=new THREE.Mesh(new THREE.RingGeometry(1.55,1.58,64), new THREE.MeshBasicMaterial({color:0x3B82F6,transparent:true,opacity:.25,side:THREE.DoubleSide}));
-  ring.rotation.x=-Math.PI/2; ring.position.y=-.859; scene.add(ring);
-
-  const ENV_BG={studio:['#eef3fb','#ffffff'],day:['#dcecff','#ffffff'],night:['#161b28','#0b0f19'],outdoor:['#cfe8d9','#f2f8ee']};
-  function setEnv(name){
-    const [c1]=ENV_BG[name];
-    stage.style.background = name==='night'
-      ? `linear-gradient(180deg,${ENV_BG.night[0]} 0%, ${ENV_BG.night[1]} 100%)`
-      : `linear-gradient(180deg,${c1} 0%, #f8fafd 60%, #ffffff 100%)`;
-    hemi.intensity = name==='night' ? .35 : name==='outdoor' ? 1.05 : .9;
-    key.intensity = name==='night' ? .5 : name==='day' ? 1.35 : 1.15;
-    key.color.set(name==='night' ? 0x8fb2ff : 0xffffff);
-    scene.background=null;
-  }
-  setEnv('studio');
-
-  // --- generic GLB product loader (works with any model dropped into models/product.glb) ---
-  const modelGroup=new THREE.Group();
-  scene.add(modelGroup);
-
-  const FLOOR_Y=floor.position.y;        // model base sits exactly on the existing floor
-  const TARGET_SIZE=1.7;                  // normalized "fit" size inside the viewer
-  const clock=new THREE.Clock();
-
-  let currentModel=null;     // root Object3D of the loaded glTF scene
-  let meshList=[];           // every THREE.Mesh found inside the model (any depth)
-  let mixer=null;            // AnimationMixer, created only if the GLB has animation clips
-  let explodeRig=[];         // per-child explode data, rebuilt for whichever model is loaded
-  let lookTarget=new THREE.Vector3(0,-.05,0);
-  let fitDist=camera.position.length();
-
-  function disposeMaterial(mat){
-    if(!mat) return;
-    Object.keys(mat).forEach(k=>{ const v=mat[k]; if(v && v.isTexture) v.dispose(); });
-    mat.dispose();
-  }
-  function clearCurrentModel(){
-    if(!currentModel) return;
-    currentModel.traverse(child=>{
-      if(child.isMesh){
-        child.geometry?.dispose();
-        (Array.isArray(child.material)?child.material:[child.material]).forEach(disposeMaterial);
+const bookMeetingBtn = document.getElementById("bookMeetingBtn");
+if (bookMeetingBtn) {
+  bookMeetingBtn.addEventListener("click", function(e){
+      e.preventDefault();
+      if (window.Calendly) {
+        Calendly.initPopupWidget({
+            url: "https://calendly.com/YOUR_USERNAME/discovery-call"
+        });
       }
-    });
-    modelGroup.remove(currentModel);
-    currentModel=null; meshList=[]; mixer=null; explodeRig=[];
-  }
-
-  function prepareExplodeRig(root){
-    explodeRig=[];
-    const centerLocal=new THREE.Box3().setFromObject(root).getCenter(new THREE.Vector3());
-    root.children.forEach(child=>{
-      const childBox=new THREE.Box3().setFromObject(child);
-      if(childBox.isEmpty()) return;
-      const childCenter=childBox.getCenter(new THREE.Vector3());
-      const dir=childCenter.clone().sub(centerLocal);
-      if(dir.lengthSq()<1e-6) dir.set(Math.random()-.5,Math.random()-.5,Math.random()-.5);
-      dir.normalize();
-      explodeRig.push({obj:child, dir, orig:child.position.clone()});
-    });
-  }
-
-  function forEachMaterial(fn){
-    meshList.forEach(m=>{
-      const mats=Array.isArray(m.material)?m.material:[m.material];
-      mats.forEach(mat=>{ if(mat) fn(mat); });
-    });
-  }
-
-  function updateCam(){
-    camera.position.set(
-      dist*Math.cos(rotX)*Math.sin(rotY),
-      dist*Math.sin(rotX)+lookTarget.y+.5,
-      dist*Math.cos(rotX)*Math.cos(rotY)
-    );
-    camera.lookAt(lookTarget);
-  }
-
-  // ------ interaction state ------
-  let autoRotate=false, wireframe=false, exploded=false;
-  let rotX=-0.12, rotY=0.55, dist=camera.position.length();
-  let dragging=false, lastX=0,lastY=0;
-  updateCam();
-
-  function loadProductModel(url){
-    document.getElementById('viewerLoading').style.display='flex';
-    document.getElementById('viewerLoading').style.opacity='1';
-    document.getElementById('viewerLoading').innerHTML='<span class="spin"></span>LOADING SCENE…';
-   
-
-    const loader=new THREE.GLTFLoader();
-    loader.load(url, (gltf)=>{
-      clearCurrentModel();
-      const root=gltf.scene || (gltf.scenes && gltf.scenes[0]);
-      if(!root){ throw new Error('GLTF file contains no scene'); }
-
-      // 1) center model on X/Z, drop base to y=0 first
-      let box=new THREE.Box3().setFromObject(root);
-      let size=box.getSize(new THREE.Vector3());
-      let center=box.getCenter(new THREE.Vector3());
-      root.position.x-=center.x;
-      root.position.z-=center.z;
-      root.position.y-=box.min.y;
-
-      // 2) scale to fit viewer regardless of the model's native units
-      const maxDim=Math.max(size.x,size.y,size.z)||1;
-      const scale=TARGET_SIZE/maxDim;
-      root.scale.setScalar(scale);
-
-      // 3) re-measure after scaling and rest the model exactly on the floor
-      box=new THREE.Box3().setFromObject(root);
-      root.position.y+=(FLOOR_Y-box.min.y);
-
-      // 4) collect meshes, enable shadows, guard against multi-material / nested groups
-      meshList=[];
-      root.traverse(child=>{
-        if(child.isMesh){
-          child.castShadow=true;
-          child.receiveShadow=true;
-          meshList.push(child);
-        }
-      });
-
-      modelGroup.add(root);
-      currentModel=root;
-      prepareExplodeRig(root);
-
-      // 5) play every animation clip found in the GLB, if any
-      if(gltf.animations && gltf.animations.length){
-        mixer=new THREE.AnimationMixer(root);
-        gltf.animations.forEach(clip=>mixer.clipAction(clip).play());
-      }
-
-      // 6) auto-fit camera to the final bounding box
-      const finalBox=new THREE.Box3().setFromObject(root);
-      const finalSize=finalBox.getSize(new THREE.Vector3());
-      const finalCenter=finalBox.getCenter(new THREE.Vector3());
-      lookTarget.copy(finalCenter);
-      const radius=finalSize.length()/2 || 1;
-      fitDist=Math.max(2.4, Math.min(8, radius/Math.sin((camera.fov*Math.PI/180)/2)));
-      dist=fitDist;
-      updateCam();
-
-      // reapply whatever toggle states are currently active
-      if(wireframe) forEachMaterial(mat=>mat.wireframe=true);
-
-      document.getElementById('infoTris').textContent=meshList.reduce((n,m)=>n+(m.geometry.index?m.geometry.index.count/3:m.geometry.attributes.position.count/3),0).toLocaleString(undefined,{maximumFractionDigits:0});
-      document.getElementById('infoVerts').textContent=meshList.reduce((n,m)=>n+m.geometry.attributes.position.count,0).toLocaleString();
-
-      document.getElementById('viewerLoading').style.opacity='0';
-      setTimeout(()=>{ document.getElementById('viewerLoading').style.display='none'; },500);
-    }, undefined, (err)=>{
-      console.error('Vorexa Viewer: failed to load GLB model at "'+url+'". The viewer expects a valid glTF binary at this path.', err);
-      document.getElementById('viewerLoading').innerHTML='MODEL UNAVAILABLE';
-    });
-  }
-
-  renderer.domElement.addEventListener('pointerdown',(e)=>{dragging=true;lastX=e.clientX;lastY=e.clientY;});
-  window.addEventListener('pointerup',()=>dragging=false);
-  window.addEventListener('pointermove',(e)=>{
-    if(!dragging) return;
-    const dx=e.clientX-lastX, dy=e.clientY-lastY;
-    rotY-=dx*0.0055; rotX=Math.max(-0.5,Math.min(0.75,rotX+dy*0.0045));
-    lastX=e.clientX; lastY=e.clientY;
-    updateCam();
+      return false;
   });
-  renderer.domElement.addEventListener('wheel',(e)=>{
-    e.preventDefault();
-    dist=Math.max(2.6,Math.min(7,dist+e.deltaY*0.0018));
-    updateCam();
-  },{passive:false});
-
-  // color / material — applied across every mesh/material found in the loaded GLB
-  document.querySelectorAll('[data-color]').forEach(sw=>{
-    sw.addEventListener('click',()=>{
-      document.querySelectorAll('[data-color]').forEach(s=>s.classList.remove('active'));
-      sw.classList.add('active');
-      forEachMaterial(mat=>{ if(mat.color) mat.color.set(sw.dataset.color); mat.needsUpdate=true; });
-    });
-  });
-  document.querySelectorAll('[data-material]').forEach(p=>{
-    p.addEventListener('click',()=>{
-      document.querySelectorAll('[data-material]').forEach(x=>x.classList.remove('active'));
-      p.classList.add('active');
-      const leather=p.dataset.material==='leather';
-      forEachMaterial(mat=>{
-        if('roughness' in mat) mat.roughness = leather ? .4 : .85;
-        if('clearcoat' in mat) mat.clearcoat = leather ? .4 : 0;
-        mat.needsUpdate=true;
-      });
-    });
-  });
-  document.querySelectorAll('[data-env]').forEach(p=>{
-    p.addEventListener('click',()=>{
-      document.querySelectorAll('[data-env]').forEach(x=>x.classList.remove('active'));
-      p.classList.add('active');
-      setEnv(p.dataset.env);
-      showToast('Environment set to '+p.textContent);
-    });
-  });
-
-  // toggles
-  function bindToggle(id,onChange){
-    const row=document.getElementById(id);
-    row.addEventListener('click',()=>{
-      const on=row.classList.toggle('on');
-      onChange(on);
-    });
-  }
-  bindToggle('rowWire',(on)=>{ wireframe=on; forEachMaterial(mat=>mat.wireframe=on); });
-  bindToggle('rowExplode',(on)=>{
-    exploded=on;
-    explodeRig.forEach(({obj,dir,orig})=>{
-      obj.position.copy(on ? orig.clone().add(dir.clone().multiplyScalar(.6)) : orig);
-    });
-  });
-  bindToggle('rowMeasure',(on)=>{ showToast(on?'Measure tool active — click two points on the model':'Measure tool disabled'); });
-  bindToggle('rowAR',(on)=>{ showToast(on?'AR Preview ready — scan the on-screen QR from your device':'AR Preview closed'); });
-
-  document.getElementById('btnRotate').addEventListener('click',function(){ autoRotate=!autoRotate; this.classList.toggle('active',autoRotate); });
-  document.getElementById('btnReset').addEventListener('click',()=>{ rotX=-0.12; rotY=0.55; dist=fitDist||defaultCamPos.length(); updateCam(); showToast('Camera reset'); });
-  document.getElementById('btnFit').addEventListener('click',()=>{ dist=fitDist||defaultCamPos.length(); rotX=-0.1; updateCam(); showToast('Fit to screen'); });
-  document.getElementById('btnFull').addEventListener('click',()=>{
-    if(!document.fullscreenElement){ stage.requestFullscreen?.(); } else { document.exitFullscreen?.(); }
-  });
-  document.getElementById('btnShot').addEventListener('click',()=>{
-    renderer.render(scene,camera);
-    const url=renderer.domElement.toDataURL('image/png');
-    const a=document.createElement('a'); a.href=url; a.download='vorexa-viewport.png'; a.click();
-    showToast('Screenshot saved');
-  });
-  document.getElementById('btnDownload').addEventListener('click',()=>{
-    showToast('Production GLB export queued — check your inbox shortly');
-  });
-
-  window.addEventListener('resize',()=>{
-    camera.aspect=stage.clientWidth/stage.clientHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(stage.clientWidth, stage.clientHeight);
-  });
-
-  let lastT=performance.now(), frames=0, fpsAcc=0;
-  function animate(t){
-    requestAnimationFrame(animate);
-    if(autoRotate){ rotY+=0.0042; updateCam(); }
-    ring.rotation.z += 0.0015;
-    if(mixer) mixer.update(clock.getDelta());
-    renderer.render(scene,camera);
-    frames++;
-    if(t-lastT>500){ document.getElementById('fpsCounter').textContent=Math.round(frames*1000/(t-lastT)); frames=0; lastT=t; }
-  }
-  requestAnimationFrame(animate);
-  window.loadProductModel = loadProductModel;
-
-  // load the product model — swap models/product.glb on the server to change the displayed asset,
-  // no code changes required
- loadProductModel("models/chair.glb");
-})();
-document.getElementById("bookMeetingBtn").addEventListener("click", function(e){
-    e.preventDefault();
-
-    Calendly.initPopupWidget({
-        url: "https://calendly.com/YOUR_USERNAME/discovery-call"
-    });
-
-    return false;
-});
+}
 </script>
 
 <script>
@@ -1488,14 +1228,33 @@ document.getElementById("bookMeetingBtn").addEventListener("click", function(e){
       }
     });
 
-    document.getElementById("bookMeetingBtn").addEventListener("click", function (e) {
-      e.preventDefault();
+    const bookMeetingBtn = document.getElementById("bookMeetingBtn");
+    if (bookMeetingBtn) {
+      bookMeetingBtn.addEventListener("click", function (e) {
+        e.preventDefault();
 
-      cal("modal", {
-        calLink: "heyvorexa/30min"
+        cal("modal", {
+          calLink: "heyvorexa/30min"
+        });
       });
-    });
+    }
   })();
+</script>
+
+<script type="module">
+  import { GLBViewer } from './js/viewer.js';
+
+  const viewerContainer = document.getElementById('viewer');
+  const viewer = new GLBViewer(viewerContainer);
+
+  // Keep the existing portfolio buttons working:
+  // PROJECTS[].model -> loadProductModel(url)
+  window.loadProductModel = (url) => viewer.loadModel(url);
+
+  // Initial model
+  window.loadProductModel('models/chair.glb').catch((error) => {
+    console.error('[Vorexa] Initial GLB failed to load:', error);
+  });
 </script>
 </body>
 </html>
