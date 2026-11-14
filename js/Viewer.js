@@ -54,7 +54,7 @@ export const CONFIG = {
 	backgroundColor: 0xffffff,      // clean e-commerce white, per spec
 	cameraFov: 40,                  // vertical field of view, degrees
 	framingPadding: 1.4,            // >1 = extra breathing room around the model
-	minDistanceFactor: 0.45,        // zoom-in limit, relative to the fitted distance
+	minDistanceFactor: 0.6,        // zoom-in limit, relative to the fitted distance
 	maxDistanceFactor: 1.5,           // zoom-out limit, relative to the fitted distance
 	dampingFactor: 0.08,            // orbit inertia; lower = "floatier"
 	enableShadows: true,
@@ -351,6 +351,11 @@ export class GLBViewer {
 		// Defaults already match the spec exactly:
 		//   mouse:  LEFT = rotate, WHEEL = dolly, RIGHT = pan
 		//   touch:  ONE finger = rotate, TWO fingers = dolly + pan
+		// Page scroll ko viewer me atakne se bachao:
+        // wheel-zoom tabhi chale jab user viewer par click kare
+        controls.enableZoom = false;
+        renderer.domElement.addEventListener('pointerdown', () => { controls.enableZoom = true; });
+        renderer.domElement.addEventListener('pointerleave', () => { controls.enableZoom = false; });  
 		this.controls = controls;
 
 		// ---- Loaders: GLTFLoader wired to the shared Draco/KTX2/Meshopt
