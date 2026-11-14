@@ -656,8 +656,98 @@ footer{padding:70px 32px 30px;border-top:1px solid var(--line);margin-top:60px;}
   </div>
 </section>
 
+
+<section class="section" id="renders" style="background:var(--surface);">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Recent Renders</span>
+      <h2>Work from my studio</h2>
+      <p>Real production renders. Hover to pause.</p>
+    </div>
+  </div>
+
+  <div class="rm reveal" id="rmRow1"><div class="rm-track"></div></div>
+  <div class="rm rm-rev reveal" id="rmRow2"><div class="rm-track"></div></div>
+</section>
+
+<style>
+  .rm{
+    overflow:hidden;
+    margin-bottom:20px;
+    -webkit-mask-image:linear-gradient(to right,transparent,#000 8%,#000 92%,transparent);
+            mask-image:linear-gradient(to right,transparent,#000 8%,#000 92%,transparent);
+  }
+  .rm-track{
+    display:flex;
+    gap:20px;
+    width:max-content;
+    animation:rm-left 50s linear infinite;
+  }
+  .rm-rev .rm-track{animation-name:rm-right;}
+  .rm:hover .rm-track{animation-play-state:paused;}
+  .rm-item{
+    flex:0 0 auto;
+    width:360px;
+    aspect-ratio:16/10;
+    border-radius:var(--radius-sm);
+    overflow:hidden;
+    background:#fff;
+    border:1px solid var(--line);
+    box-shadow:var(--shadow-soft);
+  }
+  .rm-item img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:transform .5s cubic-bezier(.16,1,.3,1);
+  }
+  .rm-item:hover img{transform:scale(1.06);}
+  @keyframes rm-left{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  @keyframes rm-right{from{transform:translateX(-50%);}to{transform:translateX(0);}}
+
+  @media(max-width:720px){
+    .rm-item{width:240px;}
+    .rm-track{gap:14px;animation-duration:38s;}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .rm-track{animation:none;}
+    .rm{overflow-x:auto;}
+  }
+</style>
+
+<script>
+  /* ============================================================
+     APNE RENDERS YAHAN DAALO. Bas path add/remove karte raho.
+     Row 1 aur Row 2 alag list hain (kam se kam 5-6 images har row me).
+     Abhi aapki existing thumbnails placeholder me lagi hain.
+  ============================================================ */
+  const RENDERS_ROW1 = [
+    'images/chair.jpg',
+    'images/mobile.jpg',
+    'images/medical.jpg',
+    'images/gearbox.jpg',
+    'images/building.jpg',
+    'images/car.jpg'
+  ];
+ 
+
+  function buildRenderRow(rowId, list){
+    const track = document.querySelector('#'+rowId+' .rm-track');
+    // list 2 baar, taaki loop beech me na tute
+    const html = [...list, ...list].map((src, i) => {
+      const dup = i >= list.length;
+      return `<figure class="rm-item"${dup ? ' aria-hidden="true"' : ''}>
+        <img src="${src}" alt="${dup ? '' : '3D render'}" loading="lazy" width="480" height="300">
+      </figure>`;
+    }).join('');
+    track.innerHTML = html;
+  }
+  buildRenderRow('rmRow1', RENDERS_ROW1);
+  buildRenderRow('rmRow2', RENDERS_ROW2);
+</script>
 <!-- ============ TESTIMONIALS ============ -->
-<section class="section" style="background:var(--surface);">
+
+<section class="section" style="background:var(--surface);display:none;">
   <div class="wrap">
     <div class="section-head center reveal">
       <span class="eyebrow">Client Voices</span>
