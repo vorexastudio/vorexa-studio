@@ -128,6 +128,7 @@ nav{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-conte
 .nav-links a:hover{color:var(--ink);}
 .nav-links a:hover::after{width:100%;}
 .nav-right{display:flex;align-items:center;gap:14px;}
+.nav-cta{padding:12px 22px;font-size:13.5px;}
 .burger{display:none;flex-direction:column;gap:5px;padding:8px;}
 .burger span{width:22px;height:2px;background:var(--ink);border-radius:2px;}
 
@@ -435,6 +436,13 @@ footer{padding:70px 32px 30px;border-top:1px solid var(--line);margin-top:60px;}
   .section{padding:80px 0;}
   .hero{padding-top:120px;}
   .stat b{font-size:32px;}
+  header{padding:12px 16px;}
+  header.scrolled{padding:10px 16px;}
+  .logo img{height:40px;}
+  .nav-right{gap:6px;}
+  .nav-cta{padding:8px 14px;font-size:12px;box-shadow:0 6px 16px rgba(11,15,25,.14);}
+  .stats-band{margin:0 16px;padding:40px 20px;}
+  .stats-grid{gap:28px 12px;}
 }
 </style>
 
@@ -499,7 +507,7 @@ footer{padding:70px 32px 30px;border-top:1px solid var(--line);margin-top:60px;}
       <a href="#contact">Contact</a>
     </div>
     <div class="nav-right">
-      <a href="#contact" class="btn btn-primary" style="padding:12px 22px;font-size:13.5px;">Book a Meeting</a>
+      <a href="#contact" class="btn btn-primary nav-cta">Book a Meeting</a>
       <div class="burger" id="burger"><span></span><span></span><span></span></div>
     </div>
   </nav>
@@ -585,10 +593,10 @@ footer{padding:70px 32px 30px;border-top:1px solid var(--line);margin-top:60px;}
   <div class="stats-band reveal">
     <div class="wrap">
       <div class="stats-grid">
-        <div class="stat"><b data-count="500"><span>0</span>+</b><p>PROJECTS DELIVERED</p></div>
-        <div class="stat"><b data-count="300"><span>0</span>+</b><p>HAPPY CLIENTS</p></div>
-        <div class="stat"><b data-count="20"><span>0</span>+</b><p>INDUSTRIES</p></div>
-        <div class="stat"><b data-count="5"><span>0</span>+</b><p>YEARS EXPERIENCE</p></div>
+        <div class="stat"><b data-count="24"><span>0</span>h</b><p>REPLY TIME</p></div>
+        <div class="stat"><b data-count="100"><span>0</span>%</b><p>CUSTOM WORK</p></div>
+        <div class="stat"><b><span>Free</span></b><p>CONSULTATION</p></div>
+        <div class="stat"><b><span>Global</span></b><p>REMOTE DELIVERY</p></div>
       </div>
     </div>
   </div>
@@ -1152,6 +1160,7 @@ heroEl.addEventListener('mousemove',(e)=>{
    STAT COUNTERS
 ============================================================ */
 document.querySelectorAll('.stat b').forEach(el=>{
+  if(!el.dataset.count) return;
   const target=+el.dataset.count, span=el.querySelector('span');
   const io2=new IntersectionObserver((entries)=>{
     entries.forEach(entry=>{
