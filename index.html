@@ -621,7 +621,7 @@ footer{padding:70px 32px 30px;border-top:1px solid var(--line);margin-top:60px;}
     <div class="section-head reveal">
       <span class="eyebrow">Selected Work</span>
       <h2>Featured Portfolio</h2>
-      <p>A cross-industry sample of production assets — from CAD-accurate industrial parts to AR-ready retail products.</p>
+      <p>A cross-industry sample of production assets — from medical equipment and furniture to AR-ready retail products.</p>
     </div>
     <div class="filter-row reveal" id="filterRow"></div>
     <div class="port-grid" id="portGrid"></div>
@@ -734,7 +734,6 @@ footer{padding:70px 32px 30px;border-top:1px solid var(--line);margin-top:60px;}
     'images/chair.jpg',
     'images/mobile.jpg',
     'images/medical.jpg',
-    'images/gearbox.jpg',
     'images/building.jpg',
     'images/car.jpg'
   ];
@@ -938,7 +937,7 @@ const SERVICES=[
   {icon:'config',t:'Product Configurator',d:'Real-time variant systems for material, color and component swaps.'}
 ];
 
-const CATS=['All','Furniture','Electronics','Medical','Industrial','Architecture','Automotive'];
+const CATS=['All','Furniture','Electronics','Medical','Architecture','Automotive'];
 const PROJECTS = [
 
 {
@@ -947,6 +946,15 @@ const PROJECTS = [
     d:'Upholstered lounge chair with realistic fabric and wood materials.',
     thumb:'images/chair.jpg',
     model:'models/chair.glb'
+},
+
+{
+    cat:'Furniture',
+    t:'Oak Sideboard Cabinet',
+    d:'Two-drawer, two-door wooden sideboard with realistic oak grain and matte black handles.',
+    thumb:'images/drawer.webp',
+    model:'models/drawer.glb',
+    fit:'contain'
 },
 
 {
@@ -964,14 +972,6 @@ const PROJECTS = [
     thumb:'images/GE_chair.webp',
     model:'models/GE_chair.glb',
     fit:'contain'
-},
-
-{
-    cat:'Industrial',
-    t:'Modular Gearbox Unit',
-    d:'Mechanical gearbox assembly with component-level detail.',
-    thumb:'images/gearbox.jpg',
-    model:'models/gearbox.glb'
 },
 
 {
